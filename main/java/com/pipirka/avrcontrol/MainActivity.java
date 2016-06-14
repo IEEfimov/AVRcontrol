@@ -35,6 +35,9 @@ import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.util.Calendar;
 
+import java.lang.Math;
+
+
 public class MainActivity extends AppCompatActivity {
 
     // хуйня для скрытия экрана
@@ -110,16 +113,16 @@ public class MainActivity extends AppCompatActivity {
 
         String btnTest = null;
         btnTest = loadText("btn1SendValue");
-        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn1SendValue","btn1");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn1SendValue","sbtn1");
 
         btnTest = loadText("btn2SendValue");
-        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn2SendValue","btn2");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn2SendValue","sbtn2");
 
         btnTest = loadText("btn3SendValue");
-        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn3SendValue","btn3");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn3SendValue","sbtn3");
 
         btnTest = loadText("btn4SendValue");
-        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn4SendValue","btn4");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn4SendValue","sbtn4");
 
 
         ServerPort = Integer.parseInt(PortVar);
@@ -324,10 +327,80 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public boolean sendToServer(String str){
+        if (str.charAt(0)=='s'){
+            String temp = "";
+            for (int i=1;i<str.length();i++) temp+=str.charAt(i);
+            return (sendStrToServer(temp));
+        }
+        if (str.charAt(0)=='n'){
+            String temp = "";
+            String a[] = new String[255];
+            for (int i = 0;i<255;i++) a[i] = "";
+            int count = 0;
+            boolean flag = true;
+            boolean resultFlag = true;
+            for (int i=1;i<str.length();i++) temp+=str.charAt(i);
+            temp += " ";
+            for (int i=0;i<str.length();i++){
+                if (temp.charAt(i) != ' '){
+                    a[count] += temp.charAt(i);
+                    flag = true;
+                }else{
+                    if (flag) {
+                        flag = false;
+                        count++;
+                    }
 
-    public boolean sendToServer(int num){
+                }
+            }
+                // на данном этапе имеется массив строк с числами
+            for (int i=0;i<count;i++){
+                int tempInt;
+                if (a[i].charAt(0)=='0' && (a[i].charAt(1)=='b')){
+                    tempInt=0;
+                    int power = 0;
+                    for (int g = a[i].length()-1; g>=2; g--){
+                        if (a[i].charAt(g) == '1'){
+                            int currentTemp = (int) Math.pow(2,power);
+                            tempInt+=currentTemp;
+                        }
+                        power++;
+                    }
+                    if (!sendIntToServer(tempInt)) resultFlag = false;
+                    continue;
+                }
+                if (a[i].charAt(0)=='0' && (a[i].charAt(1)=='x' || a[i].charAt(1)=='h')){
+                    continue;
+                }
+                if (a[i].charAt(a[i].length()-1)=='h'){
+                    continue;
+                }
+
+                try{
+                tempInt = Integer.parseInt(a[i]);
+                } catch (Throwable e){
+                    Message msg = new Message();
+                    msg.obj = "Некорректное число!";
+                    clientHandStatus = "transmitted";
+                    clientHand.sendMessage(msg);
+                    resultFlag = false;
+                    continue;
+                }
+                if (!sendIntToServer(tempInt)) resultFlag = false ;
+            }
+
+            return (resultFlag);
+        }
+
+
+        return false;
+    }
+
+
+    public boolean sendIntToServer(int num){
         if (connection == true) {
-
+            if (num > 255) Toast.makeText(this, "Есть число > 255", Toast.LENGTH_SHORT).show();
             try {
                 out.write(num);
                 out.flush();
@@ -347,8 +420,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public boolean sendToServer(String str){
+    public boolean sendStrToServer(String str){
         if (connection == true) {
 
             try {
@@ -369,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
 
     public View.OnClickListener singleClick = new View.OnClickListener() {
         @Override
@@ -408,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
                         normal = false;
                     }
                     if (normal == true) {
-                        if (sendToServer(sendValue))   addText(" " + sendNumber,"transmitted");
+                        if (sendToServer("s"+sendValue))   addText(" " + sendNumber,"transmitted");
                     }
 
                     editSend.setText("");

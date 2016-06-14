@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="58dp"
                     android:text="Поиск сервера"
-                    android:id="@+id/button3"
+                    android:id="@+id/findServer"
                     android:layout_gravity="right"
                     android:layout_weight="1" />
             </LinearLayout>

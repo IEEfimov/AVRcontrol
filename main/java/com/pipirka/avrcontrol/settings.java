@@ -31,6 +31,7 @@ public class settings extends AppCompatActivity {
     LinearLayout LinIP;
     LinearLayout LinPort;
     Switch reDesign;
+    Button findServer;
     int reDesignFlag;
 
     String IPvar;
@@ -58,8 +59,12 @@ public class settings extends AppCompatActivity {
         reDesign = (Switch) findViewById(R.id.reDesign);
         reDesignFlag = Integer.parseInt(loadText("reDesign"));
 
+        findServer = (Button) findViewById(R.id.findServer);
+        findServer.setEnabled(false);
+
         if (reDesignFlag == 1) reDesign.setChecked(true);
         else reDesign.setChecked(false);
+
 
 
         IPvar = loadText("IPvar");
