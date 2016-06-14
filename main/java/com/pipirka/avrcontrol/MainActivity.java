@@ -47,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
     InputStreamReader in;
     OutputStreamWriter out;
     public Handler addTextThread;
-    public Handler ErrorHand;
+
     public Handler fineHand;
     boolean connection = false;
+
+    public static String clientHandStatus;
 
 
 
@@ -106,165 +108,33 @@ public class MainActivity extends AppCompatActivity {
             saveText("reDesign","1");
         reDesignFlag = Integer.parseInt(loadText("reDesign"));
 
+        String btnTest = null;
+        btnTest = loadText("btn1SendValue");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn1SendValue","btn1");
+
+        btnTest = loadText("btn2SendValue");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn2SendValue","btn2");
+
+        btnTest = loadText("btn3SendValue");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn3SendValue","btn3");
+
+        btnTest = loadText("btn4SendValue");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn4SendValue","btn4");
+
+
         ServerPort = Integer.parseInt(PortVar);
 
+        btn1.setOnClickListener(singleClick);
+        btn2.setOnClickListener(singleClick);
+        btn3.setOnClickListener(singleClick);
+        btn4.setOnClickListener(singleClick);
 
+        btn1.setOnLongClickListener(longClick);
+        btn2.setOnLongClickListener(longClick);
+        btn3.setOnLongClickListener(longClick);
+        btn4.setOnLongClickListener(longClick);
 
-
-        addTextThread = new Handler() {
-
-            public void handleMessage(Message msg) {
-                if (reDesignFlag == 1) {
-                    String text = (String) msg.obj;
-                    text += " ";
-                    TextView a = new TextView(getApplicationContext());
-                    LinearLayout b = new LinearLayout(getApplicationContext());
-                    a.setText(text);
-                    a.setTextColor(Color.BLUE);
-                    a.setGravity(Gravity.RIGHT);
-                    a.setPadding(30, 10, 30, 10);
-                    a.setBackgroundColor(Color.rgb(216, 216, 216));
-
-
-                    b.setOrientation(LinearLayout.VERTICAL);
-                    b.setGravity(Gravity.RIGHT);
-                    b.setPadding(0, 5, 50, 5);
-                    b.addView(a, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    allText.addView(b);
-                    allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-                else{
-                    String text = "Получено: "+(String) msg.obj;
-                    TextView a = new TextView(getApplicationContext());
-                    a.setTextColor(Color.BLUE);
-                    a.setText(text);
-                    allText.addView(a);
-                    allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-            }
-        };
-
-        ErrorHand = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (reDesignFlag == 1){
-                    String text = (String) msg.obj;
-                    text += " ";
-                    TextView a = new TextView(getApplicationContext());
-                    LinearLayout b = new LinearLayout(getApplicationContext());
-                    a.setText(text);
-                    a.setTextColor(Color.rgb(207,0,0));
-                    a.setGravity(Gravity.CENTER);
-                    a.setPadding(30,10,30,10);
-                    a.setBackgroundColor(Color.rgb(216,216,216));
-
-
-                    b.setOrientation(LinearLayout.VERTICAL);
-                    b.setGravity(Gravity.CENTER);
-                    b.setPadding(0,5,50,5);
-                    b.addView(a, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    allText.addView(b);
-                    allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-                } else{
-                    String text = "Ошибка: "+(String) msg.obj;
-                    TextView a = new TextView(getApplicationContext());
-                    a.setTextColor(Color.RED);
-                    a.setText(text);
-                    allText.addView(a);
-                    allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-
-
-
-            }
-        };
-
-        fineHand = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (reDesignFlag == 1) {
-                    String text = (String) msg.obj;
-                    text += " ";
-                    TextView a = new TextView(getApplicationContext());
-                    LinearLayout b = new LinearLayout(getApplicationContext());
-                    a.setText(text);
-                    a.setTextColor(Color.rgb(0, 175, 0));
-                    a.setGravity(Gravity.CENTER);
-                    a.setPadding(30, 10, 30, 10);
-                    a.setBackgroundColor(Color.rgb(216, 216, 216));
-
-
-                    b.setOrientation(LinearLayout.VERTICAL);
-                    b.setGravity(Gravity.CENTER);
-                    b.setPadding(0, 5, 50, 5);
-                    b.addView(a, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    allText.addView(b);
-                    allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-                } else{
-                    String text = "  "+(String) msg.obj;
-                    TextView a = new TextView(getApplicationContext());
-                    a.setTextColor(Color.GREEN);
-                    a.setText(text);
-                    allText.addView(a);
-                    allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-            }
-        };
-
-        View.OnClickListener shit = new View.OnClickListener() {
-            @Override
-            public void onClick(View object) {
-                Integer s = object.getId();
-                switch (s){
-                    case R.id.btn1:
-                        if (sendToServer("=== button 1 ==="))addText("=== кнопка 1 ===");
-                        break;
-                    case R.id.btn2:
-                        if (sendToServer('2'))addText("=== кнопка 2 ===");
-                        break;
-                    case R.id.btn3:
-                        if (sendToServer('3'))addText("=== кнопка 3 ===");
-                        break;
-                    case R.id.btn4:
-                        if (sendToServer('4'))addText("=== кнопка 4 ===");
-                        break;
-                    case R.id.btnSend:
-                        boolean normal = true;
-                        String sendNumber = editSend.getText().toString();
-                        int sendValue=0;
-                        try {
-                            sendValue = Integer.parseInt(sendNumber);
-                            if (sendValue < 0 || sendValue > 255){
-                                Toast.makeText(MainActivity.this, "Пока только 1 байт", Toast.LENGTH_SHORT).show();
-                                normal = false;
-                            }
-                        }
-                        catch (Throwable e){
-                            Toast.makeText(MainActivity.this, "Только целые числа!", Toast.LENGTH_SHORT).show();
-                            normal = false;
-                        }
-                            if (normal == true) {
-                                if (sendToServer(sendValue))   addText(" " + sendNumber);
-                            }
-
-                        editSend.setText("");
-                        editSend.clearFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(btnSend.getWindowToken(),
-                                InputMethodManager.HIDE_NOT_ALWAYS);
-                        break;
-
-                }
-
-
-            }
-        };
-
-        btn1.setOnClickListener(shit);
-        btn2.setOnClickListener(shit);
-        btn3.setOnClickListener(shit);
-        btn4.setOnClickListener(shit);
-        btnSend.setOnClickListener(shit);
+        btnSend.setOnClickListener(singleClick);
      //   clearAllText();
 
 //        TCPconrol = new Thread(new TCPcontrol());
@@ -302,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == 3 ){
-            addText("Информация не работает блеать!");
+            addText("Информация не работает блеать!","transmitted");
             return true;
         }
 
@@ -330,32 +200,82 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void addText(String myText) {
+    public void addText(String myText,String status) {
         if (reDesignFlag == 1) {
             TextView a = new TextView(getApplicationContext());
             LinearLayout b = new LinearLayout(getApplicationContext());
             a.setText(myText);
-            a.setTextColor(Color.rgb(0, 75, 0));
-            a.setGravity(Gravity.LEFT);
-            a.setPadding(30, 10, 30, 10);
-            a.setBackgroundColor(Color.rgb(216, 216, 216));
-
-
             b.setOrientation(LinearLayout.VERTICAL);
-            b.setGravity(Gravity.LEFT);
-            b.setPadding(0, 5, 0, 5);
+
+            switch (status){
+                case "transmitted":
+                    a.setTextColor(Color.rgb(0, 75, 0));
+                    a.setGravity(Gravity.LEFT);
+                    a.setPadding(30, 10, 30, 10);
+                    a.setBackgroundColor(Color.rgb(216, 216, 216));
+                    b.setOrientation(LinearLayout.VERTICAL);
+                    b.setGravity(Gravity.LEFT);
+                    b.setPadding(0, 5, 0, 5);
+                    break;
+                case "received":
+                    a.setTextColor(Color.BLUE);
+                    a.setGravity(Gravity.RIGHT);
+                    a.setPadding(30, 10, 30, 10);
+                    a.setBackgroundColor(Color.rgb(216, 216, 216));
+                    b.setOrientation(LinearLayout.VERTICAL);
+                    b.setGravity(Gravity.RIGHT);
+                    b.setPadding(0, 5, 50, 5);
+                    break;
+                case "error":
+                    a.setTextColor(Color.rgb(207,0,0));
+                    a.setGravity(Gravity.CENTER);
+                    a.setPadding(30,10,30,10);
+                    a.setBackgroundColor(Color.rgb(216,216,216));
+                    b.setOrientation(LinearLayout.VERTICAL);
+                    b.setGravity(Gravity.CENTER);
+                    b.setPadding(0,5,50,5);
+                    break;
+                case "fine":
+                    a.setTextColor(Color.rgb(0, 175, 0));
+                    a.setGravity(Gravity.CENTER);
+                    a.setPadding(30, 10, 30, 10);
+                    a.setBackgroundColor(Color.rgb(216, 216, 216));
+                    b.setOrientation(LinearLayout.VERTICAL);
+                    b.setGravity(Gravity.CENTER);
+                    b.setPadding(0, 5, 50, 5);
+                    break;
+                default:
+                    return;
+
+            }
+
             b.addView(a, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             allText.addView(b);
             allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-
-
-            allTextView.fullScroll(ScrollView.FOCUS_DOWN);
-
         }
         else {
             TextView a = new TextView(getApplicationContext());
             a.setTextColor(Color.DKGRAY);
-            a.setText("Отправлено: "+myText);
+            switch (status) {
+                case "transmitted":
+                    a.setTextColor(Color.DKGRAY);
+                    a.setText("Отправлено: " + myText);
+                    break;
+                case "received":
+                    a.setTextColor(Color.BLUE);
+                    a.setText("Получено: " + myText);
+                    break;
+                case "error":
+                    a.setTextColor(Color.RED);
+                    a.setText("Ошибка: " + myText);
+                    break;
+                case "fine":
+                    a.setTextColor(Color.GREEN);
+                    a.setText(myText);
+                    break;
+                default:
+                    return;
+            }
             allText.addView(a);
             allTextView.fullScroll(ScrollView.FOCUS_DOWN);
         }
@@ -414,7 +334,8 @@ public class MainActivity extends AppCompatActivity {
            } catch (Throwable e) {
                 Message msg = new Message();
                 msg.obj = "Соединение потеряно";
-                ErrorHand.sendMessage(msg);
+                clientHandStatus = "error";
+                clientHand.sendMessage(msg);
                 connection = false;
                 return false;
             }
@@ -437,7 +358,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (Throwable e) {
                 Message msg = new Message();
                 msg.obj = "Соединение потеряно";
-                ErrorHand.sendMessage(msg);
+                clientHandStatus = "error";
+                clientHand.sendMessage(msg);
                 connection = false;                return false;
             }
             return true;
@@ -448,6 +370,97 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public View.OnClickListener singleClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View object) {
+            Integer s = object.getId();
+            String value = null;
+            switch (s){
+                case R.id.btn1:
+                    value = loadText("btn1SendValue");
+                    if (sendToServer(value))addText("=== кнопка 1 ===","transmitted");
+                    break;
+                case R.id.btn2:
+                    value = loadText("btn2SendValue");
+                    if (sendToServer(value))addText("=== кнопка 2 ===","transmitted");
+                    break;
+                case R.id.btn3:
+                    value = loadText("btn3SendValue");
+                    if (sendToServer(value))addText("=== кнопка 3 ===","transmitted");
+                    break;
+                case R.id.btn4:
+                    value = loadText("btn4SendValue");
+                    if (sendToServer(value))addText("=== кнопка 4 ===","transmitted");
+                    break;
+                case R.id.btnSend:
+                    boolean normal = true;
+                    String sendNumber = editSend.getText().toString();
+                    int sendValue=0;
+                    try {
+                        sendValue = Integer.parseInt(sendNumber);
+                        if (sendValue < 0 || sendValue > 255){
+                            Toast.makeText(MainActivity.this, "Пока только 1 байт", Toast.LENGTH_SHORT).show();
+                            normal = false;
+                        }
+                    }
+                    catch (Throwable e){
+                        Toast.makeText(MainActivity.this, "Только целые числа!", Toast.LENGTH_SHORT).show();
+                        normal = false;
+                    }
+                    if (normal == true) {
+                        if (sendToServer(sendValue))   addText(" " + sendNumber,"transmitted");
+                    }
+
+                    editSend.setText("");
+                    editSend.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(btnSend.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                    break;
+
+            }
+
+
+        }
+    };
+
+    public View.OnLongClickListener longClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View object) {
+            Integer s = object.getId();
+            switch (s){
+                case R.id.btn1:
+                    variables.btnConfWho = "btn1SendValue";
+                    new btnConf().show(getSupportFragmentManager(),"говно");
+                    break;
+                case R.id.btn2:
+                    variables.btnConfWho = "btn2SendValue";
+                    new btnConf().show(getSupportFragmentManager(),"говно");
+                    break;
+                case R.id.btn3:
+                    variables.btnConfWho = "btn3SendValue";
+                    new btnConf().show(getSupportFragmentManager(),"говно");
+                    break;
+                case R.id.btn4:
+                    variables.btnConfWho = "btn4SendValue";
+                    new btnConf().show(getSupportFragmentManager(),"говно");
+                    break;
+
+
+            }
+
+            return true;
+        }
+    };
+
+    public Handler clientHand = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            addText(msg.obj.toString(),clientHandStatus);
+            clientHandStatus = null;
+        }
+    };
+
     class ClientThread implements Runnable {
 
         @Override
@@ -455,18 +468,20 @@ public class MainActivity extends AppCompatActivity {
            try {
                 SocketAddress sockAddr = new InetSocketAddress(ServerIp, ServerPort);
                 socket = new Socket();
-                socket.connect(sockAddr,3000);
+                socket.connect(sockAddr,5000);
                 out = new OutputStreamWriter(socket.getOutputStream(),"ASCII");
                 in = new InputStreamReader(socket.getInputStream(),"ASCII");
                Message msg = new Message();
                msg.obj = "Связь установлена :)\n Твой порт = "+socket.getLocalPort();
-               fineHand.sendMessage(msg);
+               clientHandStatus = "fine";
+               clientHand.sendMessage(msg);
                 connection = true;
                 scan();
             } catch (Throwable e) {
                Message msg = new Message();
                msg.obj = "Ошибка подключения";
-               ErrorHand.sendMessage(msg);
+               clientHandStatus = "error";
+               clientHand.sendMessage(msg);
                 connection = false;
             }
         }
@@ -485,7 +500,8 @@ public class MainActivity extends AppCompatActivity {
 
                         Message msg = new Message();
                         msg.obj = tempStr;
-                        addTextThread.sendMessage(msg);
+                        clientHandStatus = "received";
+                        clientHand.sendMessage(msg);
                         tempStr = " ";
                         tempChar = 0;
                     }
@@ -493,13 +509,15 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Message msg = new Message();
                     msg.obj = "Соединение потеряно";
-                    ErrorHand.sendMessage(msg);
+                    clientHandStatus = "error";
+                    clientHand.sendMessage(msg);
                     connection = false;
                 }
             }
             Message msg = new Message();
             msg.obj = "Соединение потеряно";
-            ErrorHand.sendMessage(msg);
+            clientHandStatus = "error";
+            clientHand.sendMessage(msg);
             connection = false;
         }
 

@@ -29,23 +29,7 @@ public class ipAsk extends DialogFragment implements
 
     boolean AlLRightFlag = true;
 
-  /**  View.OnClickListener shit = new View.OnClickListener() {
-        @Override
-        public void onClick(View object) {
-            Integer s = object.getId();
-            switch (s){
-                case R.id.clearIP:
-                    writeBox.setText("");
-                    break;
 
-
-            }
-
-
-        }
-    };
-
-   */
 
 
     @Override

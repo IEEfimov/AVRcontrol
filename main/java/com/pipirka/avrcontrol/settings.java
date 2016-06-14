@@ -3,6 +3,7 @@ package com.pipirka.avrcontrol;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 
 public class settings extends AppCompatActivity {
 
@@ -114,6 +121,36 @@ public class settings extends AppCompatActivity {
         return savedText;
 
     }
+
+//    class ClientThread implements Runnable {
+//    // пиздец страшный костыль
+//        @Override
+//        public void run() {
+//            int a=192,b=168,c=0,d=0,sock;
+//            boolean isConnect = false;
+//            while (!isConnect) {
+//                try {
+//                    SocketAddress sockAddr = new InetSocketAddress(ServerIp, ServerPort);
+//                    socket = new Socket();
+//                    socket.connect(sockAddr, 5);
+//                    out = new OutputStreamWriter(socket.getOutputStream(), "ASCII");
+//                    in = new InputStreamReader(socket.getInputStream(), "ASCII");
+//                    Message msg = new Message();
+//                    msg.obj = "Связь установлена :)\n Твой порт = " + socket.getLocalPort();
+//                    fineHand.sendMessage(msg);
+//                    connection = true;
+//                    scan();
+//                } catch (Throwable e) {
+//                    Message msg = new Message();
+//                    msg.obj = "Ошибка подключения";
+//                    ErrorHand.sendMessage(msg);
+//                    connection = false;
+//                }
+//            }
+//        }
+//
+//
+//    }
 
 }
 
