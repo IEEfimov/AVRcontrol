@@ -203,7 +203,7 @@ public class btnConf extends DialogFragment implements
                         continue;
                     }
                     for (int g = a[i].length() - 1; g >= 2; g--) {
-                        if (!Character.isDigit(a[i].charAt(g)) && (a[i].charAt(g) < 'a' || a[i].charAt(g) > 'f'))
+                        if (!Character.isDigit(a[i].charAt(g)) && (a[i].charAt(g) < 'A' || a[i].charAt(g) > 'F'))
                             isAllRight = false;
                         break;
                     }
@@ -216,7 +216,7 @@ public class btnConf extends DialogFragment implements
                     continue;
                 }
                 for (int g = a[i].length() - 2; g >= 0; g--) {
-                    if (!Character.isDigit(a[i].charAt(g)) && (a[i].charAt(g) < 'a' || a[i].charAt(g) > 'f'))
+                    if (!Character.isDigit(a[i].charAt(g)) && (a[i].charAt(g) < 'A' || a[i].charAt(g) > 'F'))
                         isAllRight = false;
                     break;
                 }

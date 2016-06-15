@@ -366,6 +366,17 @@ public class MainActivity extends AppCompatActivity {
                 // на данном этапе имеется массив строк с числами
             for (int i=0;i<count;i++){
                 int tempInt;
+                if (a[i].charAt(0)=='0' && (a[i].charAt(1)=='x' || a[i].charAt(1)=='h')){
+                    tempInt=0;
+                    int power = 0;
+                    for (int g = a[i].length()-1; g>=2; g--){
+                            int currentTemp = ((int) Math.pow(16,power))*hexToDec(a[i].charAt(g));
+                            tempInt+=currentTemp;
+                            power++;
+                    }
+                    if (!sendIntToServer(tempInt)) resultFlag = false;
+                    continue;
+                }
                 if (a[i].charAt(0)=='0' && (a[i].charAt(1)=='b')){
                     tempInt=0;
                     int power = 0;
@@ -379,10 +390,15 @@ public class MainActivity extends AppCompatActivity {
                     if (!sendIntToServer(tempInt)) resultFlag = false;
                     continue;
                 }
-                if (a[i].charAt(0)=='0' && (a[i].charAt(1)=='x' || a[i].charAt(1)=='h')){
-                    continue;
-                }
                 if (a[i].charAt(a[i].length()-1)=='h'){
+                    tempInt=0;
+                    int power = 0;
+                    for (int g = a[i].length()-2; g>=0; g--){
+                        int currentTemp = ((int) Math.pow(16,power))*hexToDec(a[i].charAt(g));
+                        tempInt+=currentTemp;
+                        power++;
+                    }
+                    if (!sendIntToServer(tempInt)) resultFlag = false;
                     continue;
                 }
 
@@ -549,6 +565,29 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private int hexToDec(char hex) {
+        switch (hex){
+            case '0': return 0;
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '5': return 5;
+            case '6': return 6;
+            case '7': return 7;
+            case '8': return 8;
+            case '9': return 9;
+            case 'A': return 10;
+            case 'B': return 11;
+            case 'C': return 12;
+            case 'D': return 13;
+            case 'E': return 14;
+            case 'F': return 15;
+            default:  return -1;
+
+        }
+    }
+
     private boolean isCorrect() {
         String str = editSend.getText().toString();
 
@@ -573,7 +612,7 @@ public class MainActivity extends AppCompatActivity {
                             isAllRight = false;
                         }
                         for (int g = str.length() - 1; g >= 2; g--) {
-                            if (!Character.isDigit(str.charAt(g)) && (str.charAt(g) < 'a' || str.charAt(g) > 'f'))
+                            if (!Character.isDigit(str.charAt(g)) && (str.charAt(g) < 'A' || str.charAt(g) > 'F'))
                                 isAllRight = false;
 
                         }
@@ -585,7 +624,7 @@ public class MainActivity extends AppCompatActivity {
                         isAllRight = false;
                     }
                     for (int g = str.length() - 2; g >= 0; g--) {
-                        if (!Character.isDigit(str.charAt(g)) && (str.charAt(g) < 'a' || str.charAt(g) > 'f'))
+                        if (!Character.isDigit(str.charAt(g)) && (str.charAt(g) < 'A' || str.charAt(g) > 'F'))
                             isAllRight = false;
                     }
                     continue;
