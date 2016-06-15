@@ -107,8 +107,6 @@
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
                     android:id="@+id/editSend"
                     android:layout_weight="1" />
 

@@ -9,6 +9,8 @@ import android.os.Message;
 import android.print.PrintAttributes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(this, settings.class);
 
         editSend = (EditText) findViewById(R.id.editSend);
+    //    editSend.addTextChangedListener(textWatcher);
         btnSend = (Button) findViewById(R.id.btnSend);
 
 
@@ -124,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         btnTest = loadText("btn4SendValue");
         if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btn4SendValue","sbtn4");
 
+        btnTest = loadText("btnSendValue");
+        if (btnTest == null||btnTest=="" || btnTest ==" ")  saveText("btnSendValue","s");
+
+       // editSend.setText(loadText("btnSendValue"));
 
         ServerPort = Integer.parseInt(PortVar);
 
@@ -138,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
         btn4.setOnLongClickListener(longClick);
 
         btnSend.setOnClickListener(singleClick);
-     //   clearAllText();
+        btnSend.setOnLongClickListener(longClick);
+
+        //   clearAllText();
 
 //        TCPconrol = new Thread(new TCPcontrol());
 //        TCPconrol.start();
@@ -466,24 +475,14 @@ public class MainActivity extends AppCompatActivity {
                     if (sendToServer(value))addText("=== кнопка 4 ===","transmitted");
                     break;
                 case R.id.btnSend:
-                    boolean normal = true;
-                    String sendNumber = editSend.getText().toString();
-                    int sendValue=0;
-                    try {
-                        sendValue = Integer.parseInt(sendNumber);
-                        if (sendValue < 0 || sendValue > 255){
-                            Toast.makeText(MainActivity.this, "Пока только 1 байт", Toast.LENGTH_SHORT).show();
-                            normal = false;
+                    if (loadText("btnSendValue").charAt(0)=='n'){
+                        if (!isCorrect()){
+                            Toast.makeText(getApplicationContext(),"Вазя, хуйня какая-то, а не число!",Toast.LENGTH_SHORT);
+                            break;
                         }
                     }
-                    catch (Throwable e){
-                        Toast.makeText(MainActivity.this, "Только целые числа!", Toast.LENGTH_SHORT).show();
-                        normal = false;
-                    }
-                    if (normal == true) {
-                        if (sendToServer("s"+sendValue))   addText(" " + sendNumber,"transmitted");
-                    }
-
+                    String temp = loadText("btnSendValue") + editSend.getText().toString();
+                    if (sendToServer(temp))  addText(editSend.getText().toString(),"transmitted");
                     editSend.setText("");
                     editSend.clearFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -518,6 +517,10 @@ public class MainActivity extends AppCompatActivity {
                     variables.btnConfWho = "btn4SendValue";
                     new btnConf().show(getSupportFragmentManager(),"говно");
                     break;
+                case R.id.btnSend:
+                    variables.btnConfWho = "btnSendValue";
+                    new btnConf().show(getSupportFragmentManager(),"говно");
+                    break;
 
 
             }
@@ -525,6 +528,80 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     };
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String temp = loadText("btnSendValue");
+            if (temp.charAt(0) == 'n') {
+                isCorrect();
+            }
+        }
+    };
+
+    private boolean isCorrect() {
+        String str = editSend.getText().toString();
+
+        boolean isAllRight = true;
+        for (int i = 0; i<1;i++) {
+            if (str.length() <= 0) isAllRight = false;
+            else {
+                if (str.length() >= 2) {
+                    if (str.charAt(0) == '0' && (str.charAt(1) == 'b')) {
+                        if (str.length() == 2) {
+                            isAllRight = false;
+
+                        }
+                        for (int g = str.length() - 1; g >= 2; g--) {
+                            if (str.charAt(g) != '1' && str.charAt(g) != '0')
+                                isAllRight = false;
+                        }
+                        continue;
+                    }
+                    if (str.charAt(0) == '0' && (str.charAt(1) == 'x' || str.charAt(1) == 'h')) {
+                        if (str.length() == 2) {
+                            isAllRight = false;
+                        }
+                        for (int g = str.length() - 1; g >= 2; g--) {
+                            if (!Character.isDigit(str.charAt(g)) && (str.charAt(g) < 'a' || str.charAt(g) > 'f'))
+                                isAllRight = false;
+
+                        }
+                        continue;
+                    }
+                }
+                if (str.charAt(str.length() - 1) == 'h') {
+                    if (str.length() == 1) {
+                        isAllRight = false;
+                    }
+                    for (int g = str.length() - 2; g >= 0; g--) {
+                        if (!Character.isDigit(str.charAt(g)) && (str.charAt(g) < 'a' || str.charAt(g) > 'f'))
+                            isAllRight = false;
+                    }
+                    continue;
+                }
+
+
+                try {
+                    int tempInt = Integer.parseInt(str);
+                } catch (Throwable e) {
+                    isAllRight = false;
+                }
+            }
+        }
+
+        return isAllRight;
+    }
 
     public Handler clientHand = new Handler() {
         @Override

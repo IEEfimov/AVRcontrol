@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class btnConf extends DialogFragment implements
         DialogInterface.OnClickListener {
 
     private View form=null;
+    private LinearLayout linear;
     private RadioButton rad1;
     private RadioButton rad2;
     private EditText edit;
@@ -36,9 +38,16 @@ public class btnConf extends DialogFragment implements
         form= getActivity().getLayoutInflater()
                 .inflate(R.layout.activity_btn_conf, null);
 
+        linear = (LinearLayout) form.findViewById(R.id.btnConf_ll);
+
         rad1 = (RadioButton) form.findViewById(R.id.btnConf_radio1);
         rad2 = (RadioButton) form.findViewById(R.id.btnConf_radio2);
         edit = (EditText) form.findViewById(R.id.btnConf_edit);
+
+        if (variables.btnConfWho == "btnSendValue") { //edit.setVisibility(View.INVISIBLE);
+            linear.removeView(edit);
+            rad2.setText("Число");
+        }
 
         edit.addTextChangedListener(textWatcher);
 
